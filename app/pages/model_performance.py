@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
 
-def show_model_performance(accuracy, f1, cm):
+def show_model_performance(accuracy, f1, cm, model):
     """Display model performance page"""
     st.markdown("## 📊 Performa Model Random Forest")
     
@@ -63,6 +63,53 @@ def show_model_performance(accuracy, f1, cm):
             font=dict(size=14)
         )
         st.plotly_chart(fig, use_container_width=True)
+    
+    # Feature Importance
+    st.markdown("---")
+    st.markdown("### 🔍 Fitur Paling Berpengaruh")
+    
+    try:
+        # Get feature importance from the Random Forest model
+        importances = model.named_steps['classifier'].feature_importances_
+        
+        # Get feature names after preprocessing
+        feature_names = model.named_steps['preprocessor'].get_feature_names_out()
+        
+        # Create a dictionary of feature importance
+        import pandas as pd
+        importance_df = pd.DataFrame({
+            'Feature': feature_names,
+            'Importance': importances
+        }).sort_values('Importance', ascending=False).head(10)
+        
+        # Create bar chart
+        fig = px.bar(
+            importance_df,
+            x='Importance',
+            y='Feature',
+            orientation='h',
+            title='Top 10 Fitur Paling Berpengaruh',
+            color='Importance',
+            color_continuous_scale='Viridis'
+        )
+        fig.update_layout(
+            yaxis={'categoryorder':'total ascending'},
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(size=12),
+            height=400
+        )
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.info("""
+        💡 **Interpretasi Feature Importance:**
+        - Semakin tinggi nilai importance, semakin besar pengaruh fitur tersebut terhadap prediksi
+        - Fitur dengan importance tinggi adalah faktor utama yang menentukan risiko stres
+        - Model menggunakan kombinasi semua fitur untuk prediksi yang akurat
+        """)
+        
+    except Exception as e:
+        st.warning(f"Feature importance tidak dapat ditampilkan: {str(e)}")
     
     # Model explanation
     st.markdown("---")

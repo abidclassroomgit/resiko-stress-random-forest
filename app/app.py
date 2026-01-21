@@ -37,14 +37,18 @@ st.markdown(get_custom_css(), unsafe_allow_html=True)
 @st.cache_resource
 def load_and_train():
     """Load data and train model (or load from file if exists)"""
-    df = load_data('../data/raw/dataset.csv')
+    # Get absolute paths
+    base_dir = Path(__file__).parent.parent
+    dataset_path = base_dir / 'data' / 'raw' / 'dataset.csv'
+    
+    df = load_data(str(dataset_path))
     
     # Check if saved model exists
-    model_path = '../models/best_model.pkl'
-    stats_path = '../models/preprocessing_stats.pkl'
+    model_path = str(base_dir / 'models' / 'best_model.pkl')
+    stats_path = str(base_dir / 'models' / 'preprocessing_stats.pkl')
     
     if os.path.exists(model_path) and os.path.exists(stats_path):
-        print("📦 Loading model from file...")
+        print("[INFO] Loading model from file...")
         
         try:
             # Load model
@@ -69,18 +73,18 @@ def load_and_train():
             f1 = f1_score(y_test, y_pred, average='weighted')
             cm = confusion_matrix(y_test, y_pred)
             
-            print("✅ Model loaded from file!")
+            print("[SUCCESS] Model loaded from file!")
             return df, model, accuracy, f1, cm, X_test, y_test, stats
             
         except Exception as e:
-            print(f"⚠️ Error loading model: {e}")
-            print("🔄 Training new model instead...")
+            print(f"[WARNING] Error loading model: {e}")
+            print("[INFO] Training new model instead...")
             # If loading fails, train new model
             model, accuracy, f1, cm, X_test, y_test, stats = train_model(df)
             return df, model, accuracy, f1, cm, X_test, y_test, stats
     
     else:
-        print("🚀 No saved model found. Training new model...")
+        print("[INFO] No saved model found. Training new model...")
         model, accuracy, f1, cm, X_test, y_test, stats = train_model(df)
         return df, model, accuracy, f1, cm, X_test, y_test, stats
 
@@ -129,7 +133,7 @@ def main():
     elif page == "📈 Analisis Data":
         show_analysis_page(df)
     elif page == "📊 Performa Model":
-        show_model_performance(accuracy, f1, cm)
+        show_model_performance(accuracy, f1, cm, model)
 
 if __name__ == "__main__":
     main()
