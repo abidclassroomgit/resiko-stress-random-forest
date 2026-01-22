@@ -1,6 +1,6 @@
 # Prediksi Risiko Stres Mahasiswa - Random Forest
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_logo.svg)](https://resiko-stress-random-forest.streamlit.app)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_logo.svg)](https://resiko-stress-random-forest-a2dcgt3xhzuhgj4nx5umxw.streamlit.app/)
 
 Aplikasi berbasis web untuk memprediksi tingkat risiko stres pada mahasiswa menggunakan algoritma Random Forest. Proyek ini dikembangkan sebagai bagian dari tugas mata kuliah Penambangan Data (Data Mining).
 
